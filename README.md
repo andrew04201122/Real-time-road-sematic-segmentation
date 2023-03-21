@@ -12,7 +12,6 @@ model: the place you can put different model
 
 - First, enter the folder where you git clone 
 ```console
-<<<<<<< HEAD
 docker run -it --rm --network host --gpus all --shm-size="5G" andrew05032022/carsegmentation
 ```
 
@@ -28,7 +27,8 @@ docker run -it --rm --network host --gpus all --shm-size="5G" andrew05032022/car
 docker push andrew05032022/carsegmentation
 
 ```
-=======
+- First, enter the folder you clone
+```console
 cd intern_car_segmentation
 ```
 
@@ -50,7 +50,6 @@ You have to put images which you want to demo at the frontend/img_input.
 
 The output of Segmentation image is at the output folder.
 
->>>>>>> update Dockerfile
 
 ## Environment
 
@@ -68,7 +67,6 @@ pytorch 1.8.0a0+1606899
 python=3.8
 
 opencv-contrib-python==4.1.2.30
-
 
 streamlit=1.10.0
 
