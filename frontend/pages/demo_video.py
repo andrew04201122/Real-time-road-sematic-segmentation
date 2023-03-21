@@ -154,8 +154,8 @@ if __name__ == "__main__":
         out_worker.join()
 
         #close the queue
-        in_worker.close() 
-        out_worker.close()
+        #in_worker.close() 
+        #out_worker.close()
         
         #since streamlit use web browser to display, and it just can use x264 or h264 encode to show video, however, the opencv can not use x264 encode, so we have to use ffmpeg to convert the video to x264 encoding,
         os.system(f"ffmpeg -y -i frontend/temp/demo.mp4 -vcodec libx264 frontend/output/demo.mp4") 

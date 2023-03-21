@@ -10,16 +10,9 @@ model: the place you can put different model
 
 ## The way to run this demo
 
-### First of all, you have to go to demo folder
-
-``` console
-cd demo
-
-```
-
-### Second, run docker image
-
+- First, enter the folder where you git clone 
 ```console
+<<<<<<< HEAD
 docker run -it --rm --network host --gpus all --shm-size="5G" andrew05032022/carsegmentation
 ```
 
@@ -35,6 +28,29 @@ docker run -it --rm --network host --gpus all --shm-size="5G" andrew05032022/car
 docker push andrew05032022/carsegmentation
 
 ```
+=======
+cd intern_car_segmentation
+```
+
+- Second, build the Dockerfile
+```console
+docker build -t demo:1.0 .
+```
+
+-Third, run the docker image
+```console
+docker run -it --rm --network host --gpus all --shm-size="5G" demo:1.0
+```
+if memory of device is not big enough to give 5G, you can use smaller, however, if share memory is too small, it may not run high resolution vide.
+
+There is link after you run the image, and then you can click it to open the web browser.
+
+## Note
+You have to put images which you want to demo at the frontend/img_input.
+
+The output of Segmentation image is at the output folder.
+
+>>>>>>> update Dockerfile
 
 ## Environment
 
@@ -42,23 +58,21 @@ GPU RTX3080
 
 Nvidia-smi 470.161.03
 
-cuda 11.3
+cuda 11.1.1
 
 CPU:i9-10900F
 
-pytorch 1.11.0
+pytorch 1.8.0a0+1606899
 
 ## package
-python=3.8.12
+python=3.8
 
-opencv-python-headless=4.7.0.72
+opencv-contrib-python==4.1.2.30
 
-pytorch=1.11.0
 
-torchvision=0.12.0
+streamlit=1.10.0
 
-streamlit=1.19.0
-
-jinja2=3.1.2
+jinja2=3.0.3
 
 ffmpeg=4.2.2
+
