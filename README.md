@@ -8,48 +8,64 @@ frontend: some files about streamlit such as demo_image.py which is the main pag
 
 model: the place you can put different model
 
-## The way to run this demo
+## The way to run this demo ==> using Docker 
 
-- First, enter the folder where you git clone 
+- First, clone repository 
 ```console
-docker run -it --rm --network host --gpus all --shm-size="5G" andrew05032022/carsegmentation
+git clone -b Dockerfile_update git@github.com:andrew04201122/demo.git
 ```
 
-- --network host means that the container will share the network namespace with host
-
-- --shm-size="5G" means let this container get 5G share memory, the reason we set 5G is because if share memory isn't large enough, we can not segment 1080p video.
-
-### Third, type the link, when command line show the IP:port
-
-## Docker container
-
+- Second, enter the folder you clone
 ```console
-docker push andrew05032022/carsegmentation
-
-```
-- First, enter the folder you clone
-```console
-cd intern_car_segmentation
+cd demo
 ```
 
-- Second, build the Dockerfile
+- Third, build the Dockerfile
 ```console
 docker build -t demo:1.0 .
 ```
 
--Third, run the docker image
+- Forth, run docker 
 ```console
 docker run -it --rm --network host --gpus all --shm-size="5G" demo:1.0
 ```
-if memory of device is not big enough to give 5G, you can use smaller, however, if share memory is too small, it may not run high resolution vide.
 
-There is link after you run the image, and then you can click it to open the web browser.
+After running command, a link will show up, and then you can ctrl click to open demo pages.
 
-## Note
-You have to put images which you want to demo at the frontend/img_input.
+### Note
+if you do not want to build docker by yourself, you can docker pull andrew05032022/carsegmentation:2.0
 
-The output of Segmentation image is at the output folder.
 
+## The way to run this demo ==> using Bare metal
+
+- First, install packages which is written below.
+
+- Second, clone repository
+```console
+git clone -b Dockerfile_update git@github.com:andrew04201122/demo.git
+```
+
+- Third, enter the folder you clone
+```console
+cd demo
+```
+
+- Forth, run the command
+```console
+streamlit run ./frontend/demo_image.py -- --config ./BiSeNet/configs/bisenetv2_city.py --weight_path ./model/model_final_v2_city.pth --input_folder frontend/img_input/ --output_folder frontend/output/
+
+```
+
+### Note
+In this command, there are four arguments that you can type in.
+
+config: the path of your configuration file, default is BiSeNet/configs/bisenetv2_city.py
+
+weight_path: the path of your model, default is model/model_final_v2_city.pth
+
+input_folder: the path of your input, default is at frontend/img_input/
+
+output_folder: the path of yout output, default is at frontend/output/
 
 ## Environment
 
@@ -63,7 +79,6 @@ CPU:i9-10900F
 
 pytorch 1.8.0a0+1606899
 
-## package
 python=3.8
 
 opencv-contrib-python==4.1.2.30
