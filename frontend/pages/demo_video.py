@@ -17,7 +17,7 @@ from demo.BiSeNet.configs import set_cfg_from_file
 import torch.multiprocessing as mp
 import time
 from demo.frontend.demo_image import transfer_args, rgb_to_hex
-
+import tempfile
 
 # there are 19 catagory in the CityScape dataset, so there will at most 19 color in the image
 color_dict = {0:'road',1:"sidewalk",2:"building",3:"wall",4:"fence",5:"pole",6:"traffic light",7:"traffic sign", 8:"Vegetation", 9:"terrain", 10:"sky",11:"person",12:"rider", 13:"car", 14:"truck", 15:"bus",16:"train",17:"motorcycle",18:"bicycle"}
@@ -102,6 +102,7 @@ def infer_batch(frames):
 
 
 
+
 if __name__ == "__main__":
     st.set_page_config(page_title="demo_video")
     st.sidebar.header("demo_video")
@@ -115,13 +116,34 @@ if __name__ == "__main__":
     cfg = set_cfg_from_file(config)
     net = get_model(model_weight)
     if uploaded_file is not None:
-        # Convert the file to an opencv image.
-        input_video_name = uploaded_file.name
-        video_path = input_folder + input_video_name  #frontend/img_input/video.mp4
-        st.video(video_path)
-        print(video_path)
 
-        
+        video_path = input_folder + 'demo_video.mp4'  #frontend/img_input/video.mp4
+        tfile = tempfile.NamedTemporaryFile(delete=False) 
+        tfile.write(uploaded_file.read())
+        vf = cv2.VideoCapture(tfile.name)
+
+        fourcc = cv2.VideoWriter_fourcc(*'MP4V')
+        width = vf.get(cv2.CAP_PROP_FRAME_WIDTH) # type is float
+        height = vf.get(cv2.CAP_PROP_FRAME_HEIGHT)  # type is float
+        fps = vf.get(cv2.CAP_PROP_FPS)
+
+        out = cv2.VideoWriter('./frontend/img_input/demo_video.mp4', fourcc, fps, (int(width), int(height)))
+
+        stframe = st.empty()
+
+        while vf.isOpened():
+            ret, frame = vf.read()
+            # if frame is read correctly ret is True
+            if ret == True:
+                out.write(frame)
+            else:
+                break
+
+        out.release()
+        vf.release()
+
+        st.write("Transfer image finish, please wait for segmenting")
+
         mp.set_start_method('spawn', force=True)
         
         in_q = mp.Queue(4096)
@@ -153,13 +175,12 @@ if __name__ == "__main__":
         in_worker.join()
         out_worker.join()
 
-        #close the queue
-        #in_worker.close() 
-        #out_worker.close()
-        
+
+        st.write("Segmentation finish, wait for encoding")
         #since streamlit use web browser to display, and it just can use x264 or h264 encode to show video, however, the opencv can not use x264 encode, so we have to use ffmpeg to convert the video to x264 encoding,
         os.system(f"ffmpeg -y -i frontend/temp/demo.mp4 -vcodec libx264 frontend/output/demo.mp4") 
-        
+        os.system(f"ffmpeg -y -i frontend/img_input/demo_video.mp4 -vcodec libx264 frontend/output/ori_demo_video.mp4")
+        st.video('frontend/output/ori_demo_video.mp4')
         #show video
         video_file = open(output_folder+'demo.mp4', 'rb')
         video_bytes = video_file.read()
@@ -211,7 +232,7 @@ if __name__ == "__main__":
                 with col19:
                     st.color_picker(color_dict[18],rgb_to_hex(tuple(palette[18][[2,1,0]])),disabled = False )
 	
-        
+
         
         
         

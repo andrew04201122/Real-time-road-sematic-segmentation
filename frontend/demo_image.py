@@ -64,7 +64,7 @@ def rgb_to_hex(rgb):
     return '#%02x%02x%02x' % rgb
 
 
-def demo(img_path):
+def demo(img):
     
     torch.set_grad_enabled(False)
         
@@ -82,7 +82,7 @@ def demo(img_path):
     )
 
     
-    im = cv2.imread(img_path)[:, :, ::-1] #convert BGR to RGB
+    im = img[:, :, ::-1] #convert BGR to RGB
     im = to_tensor(dict(im=im, lb=None))['im'].unsqueeze(0).cuda()
 
     # shape divisor
@@ -122,12 +122,12 @@ def main():
         input_img_name = uploaded_file.name
         img_path = img_folder + input_img_name  #frontend/img_input/example.png
         file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
-        opencv_image = cv2.imdecode(file_bytes, 1)
+        opencv_image = cv2.imdecode(file_bytes, 1) #ndarray
         # Now do something with the image! For example, let's display it:
         st.image(opencv_image, channels="BGR")
-        
+ 
         start = time.time()
-        color_index = demo(img_path)
+        color_index = demo(opencv_image)
         end = time.time()
         #if demo finish ,the button will show, and user can click it and see the semantic segmentation image
         if st.button("show"):
