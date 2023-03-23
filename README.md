@@ -33,7 +33,7 @@ docker run -it --rm --network host --gpus all --shm-size="5G" demo:1.0
 After running command, a link will show up, and then you can ctrl click to open demo pages.
 
 ### Note
-if you do not want to build docker by yourself, you can docker pull andrew05032022/carsegmentation:2.0
+if you do not want to build docker by yourself, you can docker pull andrew05032022/carsegmentation:3.0
 
 
 ## The way to run this demo ==> using Bare metal
