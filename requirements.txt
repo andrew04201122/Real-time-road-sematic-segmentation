@@ -2,3 +2,5 @@ opencv-contrib-python==4.1.2.30
 Jinja2==3.0.3
 streamlit==1.10.0
 streamlit_player==0.1.5
+streamlit-webrtc
+streamlit-player
