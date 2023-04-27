@@ -64,7 +64,7 @@ def rgb_to_hex(rgb):
     return '#%02x%02x%02x' % rgb
 
 
-def demo(img_path):
+def demo(img):
     
     torch.set_grad_enabled(False)
         
@@ -82,7 +82,7 @@ def demo(img_path):
     )
 
     
-    im = cv2.imread(img_path)[:, :, ::-1] #convert BGR to RGB
+    im = img[:, :, ::-1] #convert BGR to RGB
     im = to_tensor(dict(im=im, lb=None))['im'].unsqueeze(0).cuda()
 
     # shape divisor
@@ -122,62 +122,17 @@ def main():
         input_img_name = uploaded_file.name
         img_path = img_folder + input_img_name  #frontend/img_input/example.png
         file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
-        opencv_image = cv2.imdecode(file_bytes, 1)
+        opencv_image = cv2.imdecode(file_bytes, 1) #ndarray
         # Now do something with the image! For example, let's display it:
         st.image(opencv_image, channels="BGR")
-        
+ 
         start = time.time()
-        color_index = demo(img_path)
+        color_index = demo(opencv_image)
         end = time.time()
         #if demo finish ,the button will show, and user can click it and see the semantic segmentation image
         if st.button("show"):
             st.image(args.output_folder+"demo_test.png")
-            with st.container():
-                st.text(f"Inference time : {end - start :.2f} second")
-                st.text("The meaning of colors")
-                col1,col2,col3,col4,col5,col6 = st.columns(6)
-                with col1:
-                    st.color_picker(color_dict[0],rgb_to_hex(tuple(palette[0][[2,1,0]])),disabled = False )
-                with col2:
-                    st.color_picker(color_dict[1],rgb_to_hex(tuple(palette[1][[2,1,0]])),disabled = False )
-                with col3:
-                    st.color_picker(color_dict[2],rgb_to_hex(tuple(palette[2][[2,1,0]])),disabled = False )
-                with col4:
-                    st.color_picker(color_dict[3],rgb_to_hex(tuple(palette[3][[2,1,0]])),disabled = False )
-                with col5:
-                    st.color_picker(color_dict[4],rgb_to_hex(tuple(palette[4][[2,1,0]])),disabled = False )
-                with col6:
-                    st.color_picker(color_dict[5],rgb_to_hex(tuple(palette[5][[2,1,0]])),disabled = False )
-                
-                col7,col8,col9,col10,col11,col12 = st.columns(6)
-                with col7:
-                    st.color_picker(color_dict[6],rgb_to_hex(tuple(palette[6][[2,1,0]])),disabled = False )
-                with col8:
-                    st.color_picker(color_dict[7],rgb_to_hex(tuple(palette[7][[2,1,0]])),disabled = False )
-                with col9:
-                    st.color_picker(color_dict[8],rgb_to_hex(tuple(palette[8][[2,1,0]])),disabled = False )
-                with col10:
-                    st.color_picker(color_dict[9],rgb_to_hex(tuple(palette[9][[2,1,0]])),disabled = False )
-                with col11:
-                    st.color_picker(color_dict[10],rgb_to_hex(tuple(palette[10][[2,1,0]])),disabled = False )
-                with col12:
-                    st.color_picker(color_dict[11],rgb_to_hex(tuple(palette[11][[2,1,0]])),disabled = False )
-
-                col13,col14,col15,col16,col17,col18,col19 = st.columns(7)
-                with col13:
-                    st.color_picker(color_dict[12],rgb_to_hex(tuple(palette[12][[2,1,0]])),disabled = False )
-                with col14:
-                    st.color_picker(color_dict[13],rgb_to_hex(tuple(palette[13][[2,1,0]])),disabled = False )
-                with col15:
-                    st.color_picker(color_dict[14],rgb_to_hex(tuple(palette[14][[2,1,0]])),disabled = False )
-                with col16:
-                    st.color_picker(color_dict[15],rgb_to_hex(tuple(palette[15][[2,1,0]])),disabled = False )
-                with col17:
-                    st.color_picker(color_dict[16],rgb_to_hex(tuple(palette[16][[2,1,0]])),disabled = False )
-                with col18:
-                    st.color_picker(color_dict[17],rgb_to_hex(tuple(palette[17][[2,1,0]])),disabled = False )
-                with col19:
-                    st.color_picker(color_dict[18],rgb_to_hex(tuple(palette[18][[2,1,0]])),disabled = False )
+            st.image("./frontend/temp/color.png")
         
 if __name__ == "__main__":
     main()
